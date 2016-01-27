@@ -45,7 +45,7 @@ module GithubPages
 
     def commit_and_push(msg)
       @git.commit(msg)
-      @git.push(@git.remote(remote))
+      @git.push(remote, branch)
     end
 
     private
