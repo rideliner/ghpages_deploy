@@ -16,7 +16,7 @@ module GithubPages
           'gh-pages'
         end
 
-      @git = Git.open(Dir.pwd)
+      @git = Git.open(Dir.pwd, log: Logger.new(STDERR))
 
       setup
     end
