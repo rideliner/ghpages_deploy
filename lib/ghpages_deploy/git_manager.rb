@@ -2,6 +2,7 @@
 # Copyright (c) 2016 Nathan Currier
 
 require 'git'
+require 'logger'
 
 module GithubPages
   class GitManager
@@ -15,7 +16,7 @@ module GithubPages
           'gh-pages'
         end
 
-      @git = Git.open(Dir.pwd)
+      @git = Git.open(Dir.pwd, :log => Logger.new(STDERR))
 
       setup
     end
