@@ -15,6 +15,9 @@ module GithubPages
     def deploy
       SiteCompressor.new(@source).compress
 
+      # remove files that are already staged as a result of switching branches
+      @git.staged_modifications('.').each { |file| File.delete(file) }
+
       @destinations.keep_if { |dest| deploy_site_to(dest) }
 
       if @destinations.empty?
@@ -30,9 +33,6 @@ module GithubPages
     def deploy_site_to(dest)
       # create the full path to the destination
       FileUtils.mkdir_p(dest)
-
-      # remove files that are already staged as a result of switching branches
-      @git.staged_modifications('.').each { |file| File.delete(file) }
 
       # remove files that are already cached in the destination directory
       @git.ls_files(dest).each { |file| File.delete(file) }
