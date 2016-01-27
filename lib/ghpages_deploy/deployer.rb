@@ -31,6 +31,9 @@ module GithubPages
       # create the full path to the destination
       FileUtils.mkdir_p(dest)
 
+      # remove files that are already staged as a result of switching branches
+      @git.staged_modifications('.').each { |file| File.delete(file) }
+
       # remove files that are already cached in the destination directory
       @git.ls_files(dest).each { |file| File.delete(file) }
 
