@@ -88,6 +88,10 @@ module GithubPages
 
       # remove files already staged by checkout
       @git.remove staged_modifications('.')
+
+      if @git.is_remote_branch?(branch)
+        @git.pull(remote, branch)
+      end
     end
 
     def setup_credentials
