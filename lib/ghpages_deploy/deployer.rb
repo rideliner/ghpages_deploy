@@ -18,7 +18,7 @@ module GithubPages
       @destinations.keep_if { |dest| deploy_site_to(dest) }
 
       if @destinations.empty?
-        puts 'No changes detected, not commiting.'
+        $stderr.puts 'No changes detected, not commiting.'
       else
         @git.commit_and_push message
       end
