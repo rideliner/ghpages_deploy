@@ -9,8 +9,9 @@ require 'ghpages_deploy/git_manager'
 
 module GithubPages
   class DeployTask < ::Rake::TaskLib
-    def initialize(name = :deploy)
+    def initialize(name = :deploy, *args)
       @name = name
+      @args = args
       @destinations = []
 
       yield self if block_given?
@@ -34,7 +35,7 @@ module GithubPages
     private
 
     def define
-      task @name do
+      task @name, *@args do
         GitManager.open(@remote) do |git|
           deployer = Deployer.new(git, @source, @destinations)
           deployer.deploy
