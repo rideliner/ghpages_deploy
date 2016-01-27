@@ -16,7 +16,6 @@ module GithubPages
         end
 
       @git = Git.open(Dir.pwd)
-      @original_branch = @git.lib.branch_current
 
       setup
     end
@@ -29,7 +28,6 @@ module GithubPages
 
     def cleanup
       cleanup_credentials
-      restore_state
     end
 
     def stage(files)
@@ -98,10 +96,6 @@ module GithubPages
 
     def cleanup_credentials
       # TODO
-    end
-
-    def restore_state
-      @git.checkout(@original_branch)
     end
   end
 end
