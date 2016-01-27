@@ -87,7 +87,7 @@ module GithubPages
       end
 
       # remove files already staged by checkout
-      @git.rm staged_modifications('.')
+      @git.remove staged_modifications('.')
     end
 
     def setup_credentials
