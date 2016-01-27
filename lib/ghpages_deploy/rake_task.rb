@@ -32,7 +32,7 @@ module GithubPages
     private
 
     def define
-      task *@args do
+      task(*@args) do
         GitManager.open(@remote) do |git|
           deployer = Deployer.new(git, @source, @destinations)
           deployer.deploy
