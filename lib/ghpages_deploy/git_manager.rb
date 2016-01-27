@@ -85,6 +85,9 @@ module GithubPages
       else
         git "checkout --orphan #{branch}"
       end
+
+      # remove files already staged by checkout
+      @git.rm staged_modifications('.')
     end
 
     def setup_credentials
