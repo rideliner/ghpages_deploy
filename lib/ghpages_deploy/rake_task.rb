@@ -9,8 +9,7 @@ require 'ghpages_deploy/git_manager'
 
 module GithubPages
   class DeployTask < ::Rake::TaskLib
-    def initialize(name = :deploy, *args)
-      @name = name
+    def initialize(*args)
       @args = args
       @destinations = []
 
@@ -24,8 +23,6 @@ module GithubPages
       define
     end
 
-    attr_accessor :name
-
     attr_accessor :remote, :source
 
     def register(destination)
@@ -35,7 +32,7 @@ module GithubPages
     private
 
     def define
-      task @name, *@args do
+      task *@args do
         GitManager.open(@remote) do |git|
           deployer = Deployer.new(git, @source, @destinations)
           deployer.deploy
