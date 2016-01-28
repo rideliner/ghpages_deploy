@@ -81,8 +81,10 @@ module GithubPages
     end
 
     def setup_branch
-      if @git.is_local_branch?(branch) || @git.is_remote_branch?(branch)
+      if @git.is_local_branch?(branch)
         @git.branch(branch).checkout
+      elsif @git.is_remote_branch?(branch)
+        git "checkout #{remote}/#{branch} -b #{branch}"
       else
         git "checkout --orphan #{branch}"
       end
