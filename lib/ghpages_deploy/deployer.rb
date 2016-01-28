@@ -13,8 +13,6 @@ module GithubPages
     end
 
     def deploy
-      SiteCompressor.new(@source).compress
-
       @destinations.keep_if { |dest| deploy_site_to(dest) }
 
       if @destinations.empty?
