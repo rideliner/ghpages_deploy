@@ -22,6 +22,8 @@ module GithubPages
       @destinations << '.' if @destinations.empty?
 
       @handler = GithubPages::Handler.new
+
+      define
     end
 
     attr_accessor :remote, :source
@@ -40,6 +42,8 @@ module GithubPages
           deployer.deploy
         end
       end
+    rescue e
+      p e
     end
   end
 end
