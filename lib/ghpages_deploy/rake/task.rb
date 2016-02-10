@@ -6,6 +6,7 @@ require 'rake/tasklib'
 
 require 'ghpages_deploy/deployer'
 require 'ghpages_deploy/git_manager'
+require 'ghpages_deploy/handler'
 
 module GithubPages
   class DeployTask < ::Rake::TaskLib
@@ -20,7 +21,7 @@ module GithubPages
 
       @destinations << '.' if @destinations.empty?
 
-      @handler = Handler.new
+      @handler = GithubPages::Handler.new
     end
 
     attr_accessor :remote, :source

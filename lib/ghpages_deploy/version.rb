@@ -2,5 +2,5 @@
 # Copyright (c) 2016 Nathan Currier
 
 module GithubPages
-  VERSION = '1.3.0-beta1'.freeze
+  VERSION = '1.3.0-beta2'.freeze
 end
