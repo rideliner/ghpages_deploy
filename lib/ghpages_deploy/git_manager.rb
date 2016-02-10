@@ -32,7 +32,7 @@ module GithubPages
     end
 
     def stage(files)
-      @git.add files
+      @git.add files unless files.empty?
     end
 
     def staged_modifications(dir)
@@ -80,21 +80,22 @@ module GithubPages
       @git.config('user.email', ENV['GIT_EMAIL']) if ENV['GIT_EMAIL']
     end
 
+    def remove_staged
+      to_remove = staged_modifications('.')
+      @git.remove(to_remove) unless to_remove.empty?
+    end
+
     def setup_branch
       if @git.is_local_branch?(branch)
         @git.branch(branch).checkout
+        remove_staged
       elsif @git.is_remote_branch?(branch)
         git "checkout #{remote}/#{branch} -b #{branch}"
+        remove_staged
+        @git.pull(remote, branch)
       else
         git "checkout --orphan #{branch}"
-      end
-
-      # remove files already staged by checkout
-      to_remove = staged_modifications('.')
-      @git.remove(to_remove) unless to_remove.empty?
-
-      if @git.is_remote_branch?(branch)
-        @git.pull(remote, branch)
+        remove_staged
       end
     end
 

@@ -6,10 +6,11 @@ require 'ghpages_deploy/git_manager'
 
 module GithubPages
   class Deployer
-    def initialize(git, source, destinations)
+    def initialize(git, source, destinations, handler)
       @git = git
       @source = source
       @destinations = destinations
+      @handler = handler
     end
 
     def deploy
@@ -36,6 +37,7 @@ module GithubPages
       FileUtils.cp_r("#{@source}/.", dest)
 
       stage_destination_files(dest)
+      @git.stage @handler.on_deploy if @handler
 
       # check if any changes were made to the destination
       !@git.staged_modifications(dest).empty?
