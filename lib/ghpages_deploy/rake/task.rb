@@ -36,8 +36,8 @@ module GithubPages
     def define
       task(*@args) do
         GitManager.open(@remote) do |git|
-          deployer = Deployer.new(git, @source, @destinations)
-          deployer.deploy(@handler)
+          deployer = Deployer.new(git, @source, @destinations, @handler)
+          deployer.deploy
         end
       end
     end
