@@ -37,7 +37,7 @@ module GithubPages
       FileUtils.cp_r("#{@source}/.", dest)
 
       stage_destination_files(dest)
-      @git.stage @handler.on_deploy if @handler
+      @git.stage @handler.on_deploy.flatten.uniq if @handler
 
       # check if any changes were made to the destination
       !@git.staged_modifications(dest).empty?
