@@ -6,7 +6,8 @@ require 'logger'
 
 module GithubPages
   class GitManager
-    def initialize(remote)
+    def initialize(remote, preserved_dir)
+      @preserved = preserved_dir
       @remote = remote
       @repo = `git config remote.#{remote}.url`.gsub(/^git:/, 'https:')
       @branch =
@@ -83,6 +84,8 @@ module GithubPages
     def remove_staged
       to_remove = staged_modifications('.')
       @git.remove(to_remove) unless to_remove.empty?
+
+      git "clean -d -x --exclude #{@preserved}/"
     end
 
     def setup_branch
