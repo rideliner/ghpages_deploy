@@ -26,34 +26,43 @@ module GithubPages
     #   ...
     #
 
-    def self.update_sitemap
+    # if update_sitemap is being called, excluded directories should be relative to './'
+
+    def self.update_sitemap(excluded)
+      mapping = directory_sitemap('.', excluded).last
+
       File.open('sitemap.json', 'w+') do |file|
-        file.write directory_sitemap('.').to_json
+        file.write mapping.to_json
       end
     end
 
-    def self.directory_sitemap(dir)
-      index =
-        %w(index.html _index.html).find do |html|
-          File.exist?(File.join(dir, html))
+    def self.directory_sitemap(dir, excluded)
+      mapping =
+        Dir.foreach(dir).flat_map do |file|
+          file_dir = File.join(dir, file)
+          next [] if excluded.include?(file_dir)
+          next [] if %w(.git . ..).include?(file)
+          next [] unless Dir.exist?(file_dir)
+
+          index =
+            %w(index.html _index.html).find do |html|
+              File.exist?(File.join(file_dir, html))
+            end
+
+          next [File.basename(file_dir), index] if index
+
+          map = directory_sitemap(file_dir, excluded)
+          next [] if !map || map.empty?
+          map
         end
 
-      return {File.basename(dir) => index} if index
-
-      Hash[Dir.foreach(dir).flat_map do |file|
-        file_dir = File.join(dir, file)
-        next [] if %w(.git . ..).include?(file)
-        next [] unless Dir.exist?(file_dir)
-
-        map = directory_sitemap(file_dir)
-        next [] if map.empty?
-        [file, map]
-      end]
+      return nil if mapping.empty?
+      [File.basename(dir), Hash[*mapping]]
     end
 
-    def json_sitemap
+    def json_sitemap(excluded = [])
       handler.handle_deploy do
-        JsonRakeExt.update_sitemap
+        JsonRakeExt.update_sitemap(excluded)
         ['sitemap.json']
       end
     end
