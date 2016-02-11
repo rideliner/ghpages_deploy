@@ -13,6 +13,7 @@ module GithubPages
     def initialize(*args)
       @args = args
       @destinations = []
+      @handler = GithubPages::Handler.new
 
       yield self if block_given?
 
@@ -20,8 +21,6 @@ module GithubPages
       @remote ||= 'origin'
 
       @destinations << '.' if @destinations.empty?
-
-      @handler = GithubPages::Handler.new
 
       define
     end
