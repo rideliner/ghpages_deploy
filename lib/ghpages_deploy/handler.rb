@@ -5,12 +5,12 @@ module GithubPages
   class Handler
     def self.def_handler(sym)
       define_method(:"on_#{sym}") do |*args, &block|
-        handlers[method].each { |handle| handle.call(*args, &block) }
+        handlers[sym].each { |handle| handle.call(*args, &block) }
         nil
       end
 
       define_method(:"handle_#{sym}") do |&block|
-        handlers[method] << block
+        handlers[sym] << block
         nil
       end
     end
