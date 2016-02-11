@@ -16,7 +16,9 @@ module GithubPages
     def deploy
       @destinations.keep_if { |dest| deploy_site_to(dest) }
 
-      if @destinations.empty?
+      @git.stage @handler.on_deploy.flatten.uniq if @handler
+
+      if @git.staged_modifications('.').empty?
         $stderr.puts 'No changes detected, not commiting.'
       else
         @git.commit_and_push message
@@ -37,7 +39,6 @@ module GithubPages
       FileUtils.cp_r("#{@source}/.", dest)
 
       stage_destination_files(dest)
-      @git.stage @handler.on_deploy.flatten.uniq if @handler
 
       # check if any changes were made to the destination
       !@git.staged_modifications(dest).empty?
@@ -56,6 +57,8 @@ module GithubPages
     end
 
     def message
+      return 'Handler updates' if @destinations.empty?
+
       # English join
       msg =
         if @destinations.length == 1
