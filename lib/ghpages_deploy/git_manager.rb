@@ -22,8 +22,8 @@ module GithubPages
       setup
     end
 
-    def self.open(remote)
-      git = new(remote)
+    def self.open(*args, &block)
+      git = new(*args, &block)
       yield git
       git.cleanup
     end
