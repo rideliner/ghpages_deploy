@@ -42,8 +42,6 @@ module GithubPages
           deployer.deploy
         end
       end
-    rescue e
-      p e
     end
   end
 end

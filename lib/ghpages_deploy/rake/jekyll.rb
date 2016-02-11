@@ -6,7 +6,7 @@ require 'ghpages_deploy/rake/task'
 module GithubPages
   module JekyllRakeExt
     def init_jekyll
-      @handler.handle_deploy do
+      handler.handle_deploy do
         FileUtils.touch('.nojekyll') unless File.exist?('.nojekyll')
         ['.nojekyll']
       end

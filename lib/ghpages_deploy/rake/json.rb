@@ -33,7 +33,6 @@ module GithubPages
     end
 
     def self.directory_sitemap(dir)
-      puts dir
       index =
         %w(index.html _index.html).find do |html|
           File.exist?(File.join(dir, html))
@@ -53,7 +52,7 @@ module GithubPages
     end
 
     def json_sitemap
-      @handler.handle_deploy do
+      handler.handle_deploy do
         JsonRakeExt.update_sitemap
         ['sitemap.json']
       end
