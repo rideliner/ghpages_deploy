@@ -85,7 +85,7 @@ module GithubPages
       to_remove = staged_modifications('.')
       @git.remove(to_remove) unless to_remove.empty?
 
-      git "clean -d -x --exclude #{@preserved}/"
+      git "clean -d -x -f --exclude #{@preserved}/"
     end
 
     def setup_branch
