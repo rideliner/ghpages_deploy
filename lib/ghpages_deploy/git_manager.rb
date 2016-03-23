@@ -49,6 +49,10 @@ module GithubPages
       @git.push(remote, branch)
     end
 
+    def remove(*files)
+      @git.remove(files) unless files.empty?
+    end
+
     private
 
     attr_reader :remote, :branch, :repo
@@ -72,7 +76,8 @@ module GithubPages
 
     def setup_repo
       @git.add_remote(remote, repo) unless @git.remote(remote)
-      @git.config("remote.#{remote}.fetch", "+refs/heads/*:refs/remotes/#{remote}/*")
+      @git.config("remote.#{remote}.fetch",
+                  "+refs/heads/*:refs/remotes/#{remote}/*")
       @git.remote(remote).fetch
     end
 
@@ -82,10 +87,9 @@ module GithubPages
     end
 
     def remove_staged
-      to_remove = staged_modifications('.')
-      @git.remove(to_remove) unless to_remove.empty?
+      remove(*staged_modifications('.'))
 
-      git "clean -d -x -f --exclude #{@preserved}/"
+      git "clean -d -x -f -e #{@preserved}"
     end
 
     def setup_branch

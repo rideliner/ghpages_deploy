@@ -17,6 +17,8 @@ module GithubPages
 
       yield self if block_given?
 
+      @source &&= @source.gsub(%r{^#{Dir.pwd}[\/]?}, '')
+
       @source ||= '.'
       @remote ||= 'origin'
 

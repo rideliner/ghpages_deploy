@@ -33,7 +33,7 @@ module GithubPages
       FileUtils.mkdir_p(dest)
 
       # remove files that are already cached in the destination directory
-      @git.ls_files(dest).each { |file| File.delete(file) }
+      @git.remove(@git.ls_files(dest))
 
       # recursively copy all files from @source into dest
       FileUtils.cp_r("#{@source}/.", dest)
