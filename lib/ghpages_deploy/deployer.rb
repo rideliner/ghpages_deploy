@@ -29,11 +29,11 @@ module GithubPages
 
     # @return [Boolean] true if there were changes to the destination
     def deploy_site_to(dest)
-      # create the full path to the destination
-      FileUtils.mkdir_p(dest)
-
       # remove files that are already cached in the destination directory
       @git.remove(*@git.ls_files(dest))
+
+      # create the full path to the destination
+      FileUtils.mkdir_p(dest)
 
       # recursively copy all files from @source into dest
       FileUtils.cp_r("#{@source}/.", dest)
