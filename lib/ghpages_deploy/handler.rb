@@ -15,6 +15,7 @@ module GithubPages
     end
 
     def_handler :deploy
+    def_handler :precheck_delete?
 
     private
 

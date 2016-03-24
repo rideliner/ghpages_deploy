@@ -25,12 +25,21 @@ module GithubPages
       end
     end
 
+    # remove files that are already cached in the destination directory
+    # or have return false when passed to {Handler#precheck_delete?}
+    def clean_destination(dest)
+      to_delete = @git.ls_files(dest)
+
+      to_delete.select! { |file| @handler.precheck_delete?(file) } if @handler
+
+      @git.remove(*to_delete)
+    end
+
     private
 
     # @return [Boolean] true if there were changes to the destination
     def deploy_site_to(dest)
-      # remove files that are already cached in the destination directory
-      @git.remove(*@git.ls_files(dest))
+      clean_destination(dest)
 
       # create the full path to the destination
       FileUtils.mkdir_p(dest)
