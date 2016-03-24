@@ -28,11 +28,11 @@ module GithubPages
     # remove files that are already cached in the destination directory
     # or have return false when passed to {Handler#precheck_delete?}
     def clean_destination(dest)
-      to_delete = @git.ls_files(dest)
+      cached = @git.ls_files(dest)
 
-      to_delete.select! { |file| @handler.precheck_delete?(file) } if @handler
+      cached.select! { |file| @handler.on_precheck_delete?(file) } if @handler
 
-      @git.remove(*to_delete)
+      @git.remove(*cached)
     end
 
     private
