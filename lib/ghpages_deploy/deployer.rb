@@ -30,7 +30,13 @@ module GithubPages
     def clean_destination(dest)
       cached = @git.ls_files(dest)
 
-      cached.select! { |file| @handler.on_precheck_delete?(file) } if @handler
+      if @handler
+        cached.select! do |file|
+          results = @handler.on_precheck_delete?(file)
+          # a file gets removed if there are no results or any result is false
+          results.empty? || results.inject(&:&)
+        end
+      end
 
       @git.remove(*cached)
     end
