@@ -2,5 +2,5 @@
 # Copyright (c) 2016 Nathan Currier
 
 module GithubPages
-  VERSION = '1.4.2'.freeze
+  VERSION = '2.0.0'.freeze
 end
