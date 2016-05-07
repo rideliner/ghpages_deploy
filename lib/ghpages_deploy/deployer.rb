@@ -6,22 +6,24 @@ require 'ghpages_deploy/git_manager'
 
 module GithubPages
   class Deployer
-    def initialize(git, source, destinations, handler)
+    def initialize(git, source, destination, message, handler)
       @git = git
       @source = source
-      @destinations = destinations
+      @destination = destination
       @handler = handler
+      @message = message || "Deployed to '#{@destination}'."
     end
 
     def deploy
-      @destinations.keep_if { |dest| deploy_site_to(dest) }
+      deploy_site_to(@destination)
 
       @git.stage @handler.on_deploy.flatten.uniq if @handler
 
       if @git.staged_modifications('.').empty?
         $stderr.puts 'No changes detected, not commiting.'
       else
-        @git.commit_and_push message
+        @git.commit_and_push @message
+        $stdout.puts "Commit made with message: #{@message}"
       end
     end
 
@@ -54,9 +56,6 @@ module GithubPages
       FileUtils.cp_r("#{@source}/.", dest)
 
       stage_destination_files(dest)
-
-      # check if any changes were made to the destination
-      !@git.staged_modifications(dest).empty?
     end
 
     def stage_destination_files(dest)
@@ -69,22 +68,6 @@ module GithubPages
       end
 
       @git.stage files
-    end
-
-    def message
-      return 'Handler updates' if @destinations.empty?
-
-      # English join
-      msg =
-        if @destinations.length == 1
-          @destinations.first
-        elsif @destinations.length == 2
-          @destinations.join ' and '
-        else
-          @destinations[0..-2].join(', ') + ", and #{@destinations.last}"
-        end
-
-      "Deployed to #{msg}."
     end
   end
 end

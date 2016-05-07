@@ -12,35 +12,30 @@ module GithubPages
   class DeployTask < ::Rake::TaskLib
     def initialize(*args)
       @args = args
-      @destinations = []
       @handler = GithubPages::Handler.new
 
       yield self if block_given?
 
       @source &&= @source.gsub(%r{^#{Dir.pwd}[\/]?}, '')
 
+      @destination ||= '.'
       @source ||= '.'
       @remote ||= 'origin'
-
-      @destinations << '.' if @destinations.empty?
 
       define
     end
 
-    attr_accessor :remote, :source
+    attr_accessor :remote, :source, :destination
+    attr_accessor :repo, :branch
+    attr_accessor :message
     attr_reader :handler
-
-    def register(destination)
-      @destinations << destination
-    end
 
     private
 
     def define
       task(*@args) do
-        GitManager.open(@remote, @source) do |git|
-          deployer = Deployer.new(git, @source, @destinations, @handler)
-          deployer.deploy
+        GitManager.open(@remote, @source, @repo, @branch) do |git|
+          Deployer.new(git, @source, @destination, @message, @handler).deploy
         end
       end
     end

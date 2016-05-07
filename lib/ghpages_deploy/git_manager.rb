@@ -6,20 +6,23 @@ require 'logger'
 
 module GithubPages
   class GitManager
-    def initialize(remote, preserved_dir)
+    def initialize(remote, preserved_dir, repo = nil, branch = nil)
       @preserved = preserved_dir
       @remote = remote
-      @repo = `git config remote.#{remote}.url`.gsub(/^git:/, 'https:')
-      @branch =
-        if @repo =~ /\.github\.(?:com|io)\.git$/
-          'master'
-        else
-          'gh-pages'
-        end
+      @repo = repo || `git config remote.#{remote}.url`.gsub(/^git:/, 'https:')
+      @branch = branch || default_branch
 
       @git = Git.open(Dir.pwd)
 
       setup
+    end
+
+    def default_branch
+      if @repo =~ /\.github\.(?:com|io)\.git$/
+        'master'
+      else
+        'gh-pages'
+      end
     end
 
     def self.open(*args, &block)
@@ -76,8 +79,10 @@ module GithubPages
 
     def setup_repo
       @git.add_remote(remote, repo) unless @git.remote(remote)
-      @git.config("remote.#{remote}.fetch",
-                  "+refs/heads/*:refs/remotes/#{remote}/*")
+      @git.config(
+        "remote.#{remote}.fetch",
+        "+refs/heads/*:refs/remotes/#{remote}/*"
+      )
       @git.remote(remote).fetch
     end
 
