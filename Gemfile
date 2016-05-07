@@ -4,9 +4,3 @@
 source 'https://rubygems.org'
 
 gemspec
-
-group :dev do
-  gem 'rake', require: false
-
-  gem 'rubocop', '>= 0.36.0', require: false
-end

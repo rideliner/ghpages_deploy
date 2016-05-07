@@ -21,4 +21,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'git'
+
+  spec.add_development_dependency 'rideliner'
 end
