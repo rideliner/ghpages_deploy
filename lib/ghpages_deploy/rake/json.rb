@@ -39,12 +39,12 @@ module GithubPages
       end
     end
 
-    def generate_json_map(
+    def generate_json_sitemap(
       directory: '.', output: 'sitemap.json',
       whitelist: ['**/*'], blacklist: []
     )
-      files = self.class.expand_lists(directory, whitelist, blacklist)
-      map = self.class.directory_sitemap(files)
+      files = JsonRakeExt.expand_lists(directory, whitelist, blacklist)
+      map = JsonRakeExt.directory_sitemap(files)
 
       File.open(output, 'w+') { |f| f.puts map.to_json }
 
