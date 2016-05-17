@@ -37,18 +37,23 @@ module GithubPages
       def mash
         Hash.new { |h, k| h[k] = directory_mash }
       end
+
+      def sitemap(directory, output, whitelist, blacklist)
+        files = expand_lists(directory, whitelist, blacklist)
+        map = directory_sitemap(files)
+
+        File.open(output, 'w+') { |f| f.puts map.to_json }
+      end
     end
 
     def generate_json_sitemap(
       directory: '.', output: 'sitemap.json',
       whitelist: ['**/*'], blacklist: []
     )
-      files = JsonRakeExt.expand_lists(directory, whitelist, blacklist)
-      map = JsonRakeExt.directory_sitemap(files)
-
-      File.open(output, 'w+') { |f| f.puts map.to_json }
-
-      [output]
+      handler.handle_deploy do
+        JsonRakeExt.sitemap(directory, output, whitelist, blacklist)
+        [output]
+      end
     end
   end
 
