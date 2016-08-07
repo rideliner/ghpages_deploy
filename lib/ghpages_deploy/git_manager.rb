@@ -78,7 +78,7 @@ module GithubPages
     end
 
     def setup_repo
-      @git.add_remote(remote, repo) unless @git.remote(remote)
+      @git.add_remote(remote, repo) unless @git.remotes.map(&:name).include?(remote)
       @git.remote(remote).fetch
     end
 
