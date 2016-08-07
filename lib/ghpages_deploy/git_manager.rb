@@ -79,10 +79,6 @@ module GithubPages
 
     def setup_repo
       @git.add_remote(remote, repo) unless @git.remote(remote)
-      @git.config(
-        "remote.#{remote}.fetch",
-        "+refs/heads/*:refs/remotes/#{remote}/*"
-      )
       @git.remote(remote).fetch
     end
 
