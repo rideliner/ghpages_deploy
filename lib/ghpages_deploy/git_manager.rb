@@ -93,16 +93,19 @@ module GithubPages
       git "clean -d -x -f -e #{@preserved}"
     end
 
+    def remote_branch
+      @git.branches.remote.find do |br|
+        br.name == branch && br.remote == remote
+      end
+    end
+
     def setup_branch
-      if @git.is_local_branch?(branch)
-        @git.branch(branch).checkout
-        remove_staged
-      elsif @git.is_remote_branch?(branch)
-        git "checkout #{remote}/#{branch} -b #{branch}"
+      if br = remote_branch
+        br.checkout
         remove_staged
         @git.pull(remote, branch)
       else
-        git "checkout --orphan #{branch}"
+        git "checkout --orphan #{remote}/#{branch}"
         remove_staged
       end
     end
