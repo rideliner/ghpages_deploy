@@ -49,7 +49,7 @@ module GithubPages
 
     def commit_and_push(msg)
       @git.commit(msg)
-      @git.push(remote, '')
+      @git.push(remote, branch)
     end
 
     def remove(*files)
