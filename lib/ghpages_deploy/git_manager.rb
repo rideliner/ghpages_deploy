@@ -95,6 +95,7 @@ module GithubPages
     end
 
     def remote_branch?
+      p @git.branches.remote.map(&:full)
       @git.branches.remote.any? do |br|
         br.name == branch && br.remote == remote
       end
