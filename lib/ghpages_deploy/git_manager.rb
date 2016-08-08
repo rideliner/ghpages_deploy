@@ -95,10 +95,8 @@ module GithubPages
     end
 
     def remote_branch?
-      puts "test: #{branch} #{remote}"
       @git.branches.remote.any? do |br|
-        puts "#{br.name} #{br.remote}"
-        br.name == branch && br.remote == remote
+        br.name == branch && br.remote.name == remote
       end
     end
 
