@@ -52,6 +52,10 @@ module GithubPages
       # create the full path to the destination
       FileUtils.mkdir_p(dest)
 
+      unless File.exist?(@source) && File.directory?(@source)
+        fail "#{@source} does not exist or is not a directory."
+      end
+
       # recursively copy all files from @source into dest
       FileUtils.cp_r("#{@source}/.", dest)
 
