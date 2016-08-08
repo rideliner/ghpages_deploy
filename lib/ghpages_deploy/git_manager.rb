@@ -49,7 +49,7 @@ module GithubPages
 
     def commit_and_push(msg)
       @git.commit(msg)
-      @git.push(remote, "HEAD:#{branch}")
+      @git.push(remote, "ghpages_deployment:#{branch}")
     end
 
     def remove(*files)
@@ -78,7 +78,8 @@ module GithubPages
     end
 
     def setup_repo
-      @git.add_remote(remote, repo) unless @git.remotes.map(&:name).include?(remote)
+      @git.remove_remote(remote) if @git.remotes.map(&:name).include?(remote)
+      @git.add_remote(remote, repo)
       @git.remote(remote).fetch
     end
 
@@ -93,19 +94,21 @@ module GithubPages
       git "clean -d -x -f -e #{@preserved}"
     end
 
-    def remote_branch
-      @git.branches.remote.find do |br|
+    def remote_branch?
+      @git.branches.remote.any? do |br|
         br.name == branch && br.remote == remote
       end
     end
 
     def setup_branch
-      if br = remote_branch
-        br.checkout
+      if remote_branch?
+        puts 'checking out remote branch'
+        git "checkout -b ghpages_deployment #{remote}/#{branch}"
         remove_staged
         @git.pull(remote, branch)
       else
-        git "checkout --orphan #{remote}/#{branch}"
+        puts 'checking out orphan branch'
+        git "checkout --orphan ghpages_deployment"
         remove_staged
       end
     end
