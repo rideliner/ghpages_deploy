@@ -9,7 +9,7 @@ module GithubPages
     def initialize(remote, preserved_dir, repo = nil, branch = nil)
       @preserved = preserved_dir
       @remote = remote
-      @repo = repo || `git config remote.#{remote}.url`.gsub(/^git:/, 'https:')
+      @repo = repo || git("config remote.#{remote}.url").chomp.gsub(/^git:/, 'https:')
       @branch = branch || default_branch
 
       @git = Git.open(Dir.pwd)
@@ -102,12 +102,10 @@ module GithubPages
 
     def setup_branch
       if remote_branch?
-        puts 'checking out remote branch'
         git "checkout -b ghpages_deployment #{remote}/#{branch}"
         remove_staged
         @git.pull(remote, branch)
       else
-        puts 'checking out orphan branch'
         git "checkout --orphan ghpages_deployment"
         remove_staged
       end
